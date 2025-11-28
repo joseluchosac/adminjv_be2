@@ -4,52 +4,53 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\NoteRequest;
 use App\Models\Note;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class NoteController extends Controller
 {
-  /**
-   * Display a listing of the resource.
-   */
-  public function index()
+  public function index(): JsonResponse
   {
     $notes = Note::all();
     return response()->json($notes, 200);
   }
 
-  /**
-   * Store a newly created resource in storage.
-   */
-  public function store(NoteRequest $request)
+  public function store(NoteRequest $request): JsonResponse
   {
-    Note::create($request->all());
+    $note = Note::create($request->all());
     return response()->json([
-      'success' => true
+      'success' => true,
+      'msg' => 'Nota creada',
+      'data' => $note,
     ]);
   }
 
-  /**
-   * Display the specified resource.
-   */
-  public function show(string $id)
+  public function show(string $id): JsonResponse
   {
     $note = Note::find($id);
     return response()->json($note);
   }
 
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(Request $request, string $id)
+  public function update(NoteRequest $request, string $id): JsonResponse
   {
-    return 'Actualizando una nota';
+    $note = Note::find($id);
+    $note->title = $request->title;
+    $note->content = $request->content;
+    $note->save();
+    return response()->json([
+      'success' => true,
+      'msg' => 'Nota actualizada',
+      'data' => $note,
+    ]);
+
   }
 
-  /**
-   * Remove the specified resource from storage.
-   */
-  public function destroy(string $id)
+  public function destroy(string $id): JsonResponse
   {
-    return "Eliminando una nota";
+    Note::destroy($id);
+    return response()->json([
+      'success' => true,
+      'msg' => 'Nota eliminada'
+    ]);
   }
 }
