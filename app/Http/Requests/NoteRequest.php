@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class NoteRequest extends FormRequest
 {
@@ -25,5 +27,13 @@ class NoteRequest extends FormRequest
             'title' => 'required|min:3|max:255',
             'content' => 'required|min:3|max:255'
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'Error de validación',
+            'errors' => $validator->errors(),
+        ], 422)); // 422 es el código de estado común para errores de validación
     }
 }

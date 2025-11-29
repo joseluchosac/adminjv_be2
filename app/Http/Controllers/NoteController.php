@@ -3,21 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\NoteRequest;
+use App\Http\Resources\NoteResource;
 use App\Models\Note;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class NoteController extends Controller
 {
-  public function index(): JsonResponse
+  public function index(): ResourceCollection
   {
     $notes = Note::all();
-    return response()->json($notes, 200);
+    // return response()->json($notes, 200);
+    return NoteResource::collection($notes);
   }
 
-  public function store(NoteRequest $request): JsonResponse
+  public function store(NoteRequest $request)
   {
-    $note = Note::create($request->all());
+    // $note = Note::create($request->all());
+    return $request;
     return response()->json([
       'success' => true,
       'msg' => 'Nota creada',
